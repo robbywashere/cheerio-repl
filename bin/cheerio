@@ -3,6 +3,8 @@
 var argv = require('optimist').argv,
     cheerio = require('cheerio'),
     repl = require('repl'),
+    url = require('url'),
+    fs = require('fs'),
     request = require('request');
 
 function usage() {
@@ -17,11 +19,19 @@ if (argv.h || argv.help || argv._.length < 1) {
     usage();
 }
 
+let targetUrl = url.parse(arv._[0])
+
+if (targetUrl.protocol === "file:") {
+    loadCheerio(fs.readFileSync(targetUrl.path))
+} else {
 request(argv._[0], function(err, res, body) {
     if (err) { throw err; }		
-
-    var context = repl.start("cheerio> ", null, null, null, true).context;
-    context.res = res;
-    context.$ = cheerio.load(body); 
+    loadCheerio(body)
 });
+}
 
+
+function loadCheerio(body) {
+    var context = repl.start("cheerio> ", null, null, null, true).context;
+    context.$ = cheerio.load(body);
+}
