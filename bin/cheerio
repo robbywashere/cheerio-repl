@@ -19,7 +19,7 @@ if (argv.h || argv.help || argv._.length < 1) {
     usage();
 }
 
-let targetUrl = url.parse(arv._[0])
+let targetUrl = url.parse(argv._[0])
 
 if (targetUrl.protocol === "file:") {
     loadCheerio(fs.readFileSync(targetUrl.path))
